@@ -34,14 +34,34 @@ const UploadImage = (): JSX.Element => {
 
   const getPoke = (id:Number) => {
     setLoading(true);
-    fetch('https://pokeapi.co/api/v2/pokemon/'+id)
-      .then((res) => res.json())
-      .then((data) => {
-        setPokeData(data);
-        setLoading(false);
-        console.log(data);
-        setImage(null);
-      })
+    const data:any={
+      url:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgqrorzoV8IZn2AZmLP-GeyoLj9ICUaBD6WW8pv2oLPw&s",
+      param:"test"
+    }
+    console.log("start");
+    fetch('http://192.168.40.2:5555/',{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then((res_data)=>{
+      // setTasks(res_data);
+      console.log(res_data)
+      // return res_data;
+    });
+    console.log("end");
+
+    // fetch('https://pokeapi.co/api/v2/pokemon/'+id)
+    //   .then((res) => res.json())
+    //   .then((data) => {
+    //     setPokeData(data);
+    //     setLoading(false);
+    //     console.log(data);
+    //     setImage(null);
+    //   })
   }
 
   return (
