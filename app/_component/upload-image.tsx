@@ -7,6 +7,8 @@ import Button from '@mui/material/Button';
 
 import ReviewCard from "./card";
 
+import { createClient } from "@supabase/supabase-js";
+
 const UploadImage = (): JSX.Element => {
   const [image, setImage] = useState<File | null>(null);
   const [createObjectURL, setCreateObjectURL] = useState<any>(null);
@@ -46,7 +48,7 @@ const UploadImage = (): JSX.Element => {
       param:"test"
     }
     console.log("start");
-    fetch('http://192.168.40.2:5555/',{
+    fetch('https://192.168.40.2:5555/',{
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
