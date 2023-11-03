@@ -66,9 +66,8 @@ const UploadImage = (): JSX.Element => {
   const getImageUrl = () => {
     let uploadUrl:any = createObjectURL;
     uploadUrl = createObjectURL.split("/");
-    console.log(uploadUrl);
+    setImageId(uploadUrl[3]);
     handleFileUpload();
-    
   }
   const handleFileUpload = async() => {
 		const file = image;
