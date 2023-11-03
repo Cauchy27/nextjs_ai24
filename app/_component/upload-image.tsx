@@ -48,7 +48,7 @@ const UploadImage = (): JSX.Element => {
   const [Loading,setLoading]=useState<boolean>(false);
   const [PokeData, setPokeData] = useState<any>(null);
   const [PokeImage, setPokeImage] = useState<string>("");
-  const [imageId, setImageId] = useState<string>("test")
+  // const [imageId, setImageId] = useState<string>("test")
 
   const uploadToClient = async(event:React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -66,11 +66,14 @@ const UploadImage = (): JSX.Element => {
   const getImageUrl = () => {
     let uploadUrl:any = createObjectURL;
     uploadUrl = createObjectURL.split("/");
-    setImageId(uploadUrl[3]);
+    console.log(uploadUrl);
     handleFileUpload();
   }
   const handleFileUpload = async() => {
 		const file = image;
+
+    const imageIds:any = createObjectURL.split("/");
+    const imageId:string = imageIds[3];
 	
 		if (!file) return;
 
