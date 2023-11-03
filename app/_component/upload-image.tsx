@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef,useCallback} from "react";
 import { GetStaticProps, NextPage } from "next";
+// import Image from "next/image";
 
 import Button from '@mui/material/Button';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
@@ -139,27 +140,26 @@ const UploadImage = (): JSX.Element => {
   // const { getElementProperty } =
   //   useGetElementProperty<HTMLDivElement>(targetRef);
 
-  const img:any = new Image();
-
-  img.onload = () => {
-    const size = {
-      originalwidth: img.naturalWidth,
-      width: img.width,
-      originalheight: img.naturalHeight,
-      height: img.height,
-    };
-    // URL.revokeObjectURL(img.src);
-    console.log(size);
-    setOriginalImage_W(img.naturalWidth);
-    setOriginalImage_H(img.naturalHeight);
-  }
-
   const uploadToClient = async(event:React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
       setImage(file);
       setCreateObjectURL(URL.createObjectURL(file));
       setTimeout(()=>{
+        const img:any = new Image();
+
+        img.onload = () => {
+          const size = {
+            originalwidth: img.naturalWidth,
+            width: img.width,
+            originalheight: img.naturalHeight,
+            height: img.height,
+          };
+          // URL.revokeObjectURL(img.src);
+          console.log(size);
+          setOriginalImage_W(img.naturalWidth);
+          setOriginalImage_H(img.naturalHeight);
+        }
         img.src = URL.createObjectURL(file);
       },1000)
       console.log(createObjectURL);
