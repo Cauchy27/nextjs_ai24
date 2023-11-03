@@ -218,6 +218,7 @@ const UploadImage = (): JSX.Element => {
     console.log(data);
     console.log("start");
 
+    // 仕方がないので、IPベタ書き
     await fetch('http://192.168.40.2:5555/',{
       method: 'POST',
       headers: {
