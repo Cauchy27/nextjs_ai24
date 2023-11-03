@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef} from "react";
+import { useState, useEffect, useRef, useCallback} from "react";
 
 
 
@@ -210,11 +210,33 @@ const ImageCard = (ImageCardProps:ImageCardProps) =>{
   //   isPlaying = false;
   // }
 
+  // キーを割り当て
+  const escFunction = useCallback((event:any) => {
+    console.log(event.keyCode);
+    if (event.keyCode === 65) {
+      // キーコードを判定して何かする。
+      soundPlay(ImageCardProps.data[0].sound);
+    }
+    if (event.keyCode === 83) {
+      // キーコードを判定して何かする。
+      soundPlay(ImageCardProps.data[1].sound);
+    }
+    if (event.keyCode === 68) {
+      // キーコードを判定して何かする。
+      soundPlay(ImageCardProps.data[2].sound);
+    }
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener("keydown", escFunction, false);
+  }, []);
+
   return (
     <div style={{
       position:"absolute",
       top:"190px",
-    }}>
+      }} 
+    >
       {
         ImageCardProps.data[0].x1 &&
         <div className="wrapper" style={{
