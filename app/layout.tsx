@@ -25,7 +25,7 @@ export default function Layout(props: {
       <body style={{backgroundSize:"cover"}}>
         {/* <CssBaseline /> */}
         <Box sx={{ 
-            height: '10vh',
+            height: '100px',
             width:'100%',
             left:"0%",
             top:"0%",
@@ -34,21 +34,14 @@ export default function Layout(props: {
           {props.children}
         </Box>
         <Box sx={{ 
-            height: '90vh',
+            height: '50vh',
             width:'100%',
             left:"0%",
             mt:"1%",
             // bgcolor: '#f0e68c', 
           }} 
         >
-          <Grid container spacing={2} sx={{minHeight:"98%",maxHeight:"98%",ml:"1%",mr:"1%", maxWidth:"98%"}}>
-            <Grid xs={2}>
-              {props.left}
-            </Grid>
-            <Grid xs={10}>
               {props.right}
-            </Grid>
-          </Grid>
         </Box>
       </body>
     </html>

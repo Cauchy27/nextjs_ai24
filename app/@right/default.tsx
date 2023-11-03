@@ -19,18 +19,13 @@ export default function Right() {
     <React.Fragment>
     <CssBaseline />
     <Box sx={{ 
-        bgcolor: '#f0e68c', 
+        // bgcolor: '#f0e68c', 
         height: '100%',
-        width:'99%',
-        ml:"1%"
+        width:'100%',
+        // ml:"1%"
       }} 
     >
-      <Typography variant="h4" gutterBottom align="center">
-        ここに画像をアップロードしてください
-      </Typography>
-      
-      <UploadImage/>
-      
+      <UploadImage/>  
     </Box>
   </React.Fragment>
   );

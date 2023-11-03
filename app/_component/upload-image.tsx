@@ -1,9 +1,12 @@
 "use client"
 
-import { useState, useEffect, useRef} from "react";
+import { useState, useEffect, useRef,useCallback} from "react";
 import { GetStaticProps, NextPage } from "next";
 
 import Button from '@mui/material/Button';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import SendIcon from '@mui/icons-material/Send';
+import { styled } from '@mui/material/styles';
 
 import ReviewCard from "./card";
 
@@ -11,6 +14,7 @@ import { createClient } from "@supabase/supabase-js";
 import { type } from "os";
 
 import ImageCard from "./image-card";
+import useGetElementProperty from "./get-image-position";
 
 type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[]
 type Database = {
@@ -40,7 +44,19 @@ type Database = {
 const supabase = createClient<Database>(
   "https://txzmfottvrwpxwfttemf.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4em1mb3R0dnJ3cHh3ZnR0ZW1mIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTkwMDUxODAsImV4cCI6MjAxNDU4MTE4MH0.GcQBkFXhhMRkyRtMg9XpYYomA3nUaSyriYyLliKwqW0"
-)
+);
+
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
 
 const UploadImage = (): JSX.Element => {
   const [image, setImage] = useState<File | null>(null);
@@ -48,10 +64,10 @@ const UploadImage = (): JSX.Element => {
   const [filePoint, setFilePoint] = useState<Number>(0);
 
   const [Loading,setLoading]=useState<boolean>(false);
-  const [PokeData, setPokeData] = useState<any>(null);
-  const [PokeImage, setPokeImage] = useState<string>("");
   const [FileId, setFileId] = useState<string>("");
   const [data, setData] = useState<any|null>([]);
+  const [OriginalImage_W,setOriginalImage_W] = useState<Number>(100);
+  const [OriginalImage_H,setOriginalImage_H] = useState<Number>(100);
 
   const testData:any = [
     {
@@ -74,19 +90,80 @@ const UploadImage = (): JSX.Element => {
       y1:300,
       y2:400,
       sound:"guitar1"
-    }
-  ]
+    },
+    {
+      x1:600,
+      x2:900,
+      y1:40,
+      y2:300,
+      sound:"flute1"
+    },
+    {
+      x1:500,
+      x2:800,
+      y1:300,
+      y2:400,
+      sound:"harp3"
+    },
+    {
+      x1:30,
+      x2:100,
+      y1:100,
+      y2:400,
+      sound:"piano1"
+    },
+    {
+      x1:700,
+      x2:750,
+      y1:300,
+      y2:400,
+      sound:"marimba1"
+    },
+    {
+      x1:700,
+      x2:800,
+      y1:100,
+      y2:150,
+      sound:"taiko1"
+    },
+    {
+      x1:500,
+      x2:600,
+      y1:50,
+      y2:100,
+      sound:"trumpet1"
+    },
+  ];
+
+  // const targetRef = useRef(null);
+  // const { getElementProperty } =
+  //   useGetElementProperty<HTMLDivElement>(targetRef);
+
+  const img:any = new Image();
+
+  img.onload = () => {
+    const size = {
+      originalwidth: img.naturalWidth,
+      width: img.width,
+      originalheight: img.naturalHeight,
+      height: img.height,
+    };
+    // URL.revokeObjectURL(img.src);
+    console.log(size);
+    setOriginalImage_W(img.naturalWidth);
+    setOriginalImage_H(img.naturalHeight);
+  }
 
   const uploadToClient = async(event:React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
-
-      generateFilePoint(file.size);
-      
       setImage(file);
       setCreateObjectURL(URL.createObjectURL(file));
-      console.log(filePoint);
+      setTimeout(()=>{
+        img.src = URL.createObjectURL(file);
+      },1000)
       console.log(createObjectURL);
+
     }
 
     // setTimeout(() => {
@@ -95,11 +172,11 @@ const UploadImage = (): JSX.Element => {
     // }, 1000);
   }
 
-  const getImageUrl = () => {
+  const getImageUrl = async() => {
     let uploadUrl:any = createObjectURL;
     uploadUrl = createObjectURL.split("/");
     console.log(uploadUrl);
-    handleFileUpload();
+    return await handleFileUpload();
   }
   const handleFileUpload = async() => {
 		const file = image;
@@ -122,29 +199,26 @@ const UploadImage = (): JSX.Element => {
           // TODO 画像へのurlを使いたい場合
           const url:any = await supabase.storage.from("image_dual").getPublicUrl(imageId);
           
-          setTimeout(() => {
-            console.log("Delayed for 1 second.");
-            setFileId(imageId);
-            console.log(url.data.publicUrl);
-          }, 1000);
-          console.log(url)
+          console.log("Delayed for 1 second.");
+          setFileId(imageId);
+          console.log(url.data.publicUrl);
+          console.log(url);
+          return imageId;
         }
+        return "fail";
 	};
 
-
-  const generateFilePoint = (fileSize:any) => {
-    setFilePoint(Math.round((fileSize/1000 - Math.floor(fileSize/1000))*1008));
-  }
-
-  const getPoke = (id:Number) => {
+  const getPlayers = async() => {
+    const Id:any = await getImageUrl()
     setLoading(true);
-    console.log(FileId);
     const data:any={
-      id:FileId,
+      id:Id,
       param:"send"
     }
+    console.log(data);
     console.log("start");
-    fetch('http://192.168.40.2:5555/',{
+
+    await fetch('http://192.168.40.2:5555/',{
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -155,87 +229,35 @@ const UploadImage = (): JSX.Element => {
     .then((res_data)=>{
       setData(res_data);
       console.log(res_data)
-      // return res_data;
+      return res_data;
     });
     console.log("end");
-
-    // fetch('https://pokeapi.co/api/v2/pokemon/'+id)
-    //   .then((res) => res.json())
-    //   .then((data) => {
-    //     setPokeData(data);
-    //     setLoading(false);
-    //     console.log(data);
-    //     setImage(null);
-    //   })
-
-    
   }
-
-  // let targetImage:any = document.getElementById( "test" ) ;
-  // let clientRect:any = targetImage.getBoundingClientRect() ;
-  // var x = clientRect.left ;
-	// var y = clientRect.top ;
-
-  // window.AudioContext = window.AudioContext || (window as any).webkitAudioContext;
-  // const ctx = new AudioContext();
-
-  // let sampleSource:any;
-  // // 再生中のときはtrue
-  // let isPlaying = false;
-
-  // // 音源を取得しAudioBuffer形式に変換して返す関数
-  // async function setupSample() {
-  //   const response = await fetch("/sound/guitar1.wav");
-
-  //   console.log(response);
-
-  //   const arrayBuffer = await response.arrayBuffer();
-  //   // Web Audio APIで使える形式に変換
-  //   const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
-  //   return audioBuffer;
-  // }
-
-  // // AudioBufferをctxに接続し再生する関数
-  // function playSample(ctx:any, audioBuffer:any) {
-  //   sampleSource = ctx.createBufferSource();
-  //   // 変換されたバッファーを音源として設定
-  //   sampleSource.buffer = audioBuffer;
-  //   // 出力につなげる
-  //   sampleSource.connect(ctx.destination);
-  //   sampleSource.start();
-  //   isPlaying = true;
-  // }
-
-  // const soundPlay = async() =>{
-  //   // if (isPlaying) return;
-  //   const sample = await setupSample();
-  //   playSample(ctx, sample);
-  // }
-  
-  // // oscillatorを破棄し再生を停止する
-  // const soundStop = async() => {
-  //   sampleSource?.stop();
-  //   isPlaying = false;
-  // }
-
-
+  // キーを割り当て
+  const keyFunction = useCallback((event:any) => {
+    console.log(event.keyCode);
+  }, []);
+  useEffect(() => {
+    document.addEventListener("keydown", keyFunction, false);
+  }, []);
 
   return (
     <>
-      <Button
-          onClick={
-            ()=>{
-              getImageUrl();
-            }
-          }
-        >
-          画像のパス確認
-        </Button>
       <div className="mb-4" id="test"></div>
       {
         image && 
-        <div>
-          <img id="target_image" className="flex justify-center items-center" src={createObjectURL} alt="test" />
+        <div id="target">
+          <img 
+            id="target_image" 
+            className="flex justify-center items-center" 
+            src={createObjectURL} 
+            alt="test" 
+            // ref={targetRef} 
+            style={{
+              minWidth:OriginalImage_W +"px",
+              minHeight:OriginalImage_H + "px"
+            }}
+          />
           <ImageCard 
             data={
               // data
@@ -246,41 +268,16 @@ const UploadImage = (): JSX.Element => {
           />
         </div>
       }
-      {
-        filePoint != 0 && 
-        <Button
-          onClick={
-            ()=>{
-              getPoke(filePoint);
-            }
-          }
-        >
-          君に決めた！
+      <Button component="label" variant="contained" startIcon={<CloudUploadIcon />} sx={{ml:"30%",mr:"30%",mt:"3%",width:"40%",height:"15%"}}>
+          Upload Image
+          <VisuallyHiddenInput type="file" id="file-input" accept="image/*" name="myImage" onChange={uploadToClient} />
         </Button>
-      }
+      {/* <input id="file-input" className="hidden" type="file" accept="image/*" name="myImage" onChange={uploadToClient} /> */}
       {
-        PokeData && !image && 
-        <ReviewCard
-          title={PokeData.name}
-          imagePath={PokeData.sprites.other['official-artwork'].front_default}
-          description={""}
-        />
-
+        image && 
+        <Button component="label" variant="contained" startIcon={<SendIcon />} color="success" sx={{ml:"30%",mr:"30%",mt:"3%",width:"40%",height:"20%"}} onClick={()=>{getPlayers();}}>Go to Generate</Button>
       }
-      <label htmlFor="file-input" className="bg-primary-900 text-white-900 dark:bg-dark-900 flex justify-center items-center px-4 py-2 rounded mb-6 w-full" >
-        <svg xmlns="http://www.w3.org/2000/svg"
-          className="h-10 w-10 hover:cursor-pointer hover:bg-gray-700"
-            fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-        </svg>
-      </label>
-      <input id="file-input" className="hidden" type="file" accept="image/*" name="myImage" onChange={uploadToClient} />
-      {/* <Button onClick={()=>{soundPlay()}}>play</Button>
-      <Button onClick={()=>{soundStop()}}>stop</Button> */}
+      
     </>
   );
 }
