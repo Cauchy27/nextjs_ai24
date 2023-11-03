@@ -47,10 +47,10 @@ const UploadImage = (): JSX.Element => {
   return (
     <>
       <div className="mb-4"></div>
-      {/* {
+      {
         image && 
-        // <Image className="flex justify-center items-center" src={createObjectURL} alt="test" />
-      } */}
+        <img className="flex justify-center items-center" src={createObjectURL} alt="test" />
+      }
       {
         filePoint != 0 && 
         <Button
