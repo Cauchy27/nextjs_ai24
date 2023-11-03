@@ -25,7 +25,14 @@ const UploadImage = (): JSX.Element => {
       setImage(file);
       setCreateObjectURL(URL.createObjectURL(file));
       console.log(filePoint);
+      console.log(createObjectURL);
     }
+  }
+
+  const getImageUrl = () => {
+    let uploadUrl:any = createObjectURL;
+    uploadUrl = createObjectURL.split("/");
+    console.log(uploadUrl);
   }
 
   const generateFilePoint = (fileSize:any) => {
@@ -35,7 +42,7 @@ const UploadImage = (): JSX.Element => {
   const getPoke = (id:Number) => {
     setLoading(true);
     const data:any={
-      url:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgqrorzoV8IZn2AZmLP-GeyoLj9ICUaBD6WW8pv2oLPw&s",
+      url:createObjectURL,
       param:"test"
     }
     console.log("start");
@@ -66,6 +73,15 @@ const UploadImage = (): JSX.Element => {
 
   return (
     <>
+      <Button
+          onClick={
+            ()=>{
+              getImageUrl();
+            }
+          }
+        >
+          画像のパス確認
+        </Button>
       <div className="mb-4"></div>
       {
         image && 

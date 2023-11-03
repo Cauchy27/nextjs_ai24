@@ -15,12 +15,16 @@
     "@heroicons/react": "^2.0.18",
     "@mui/icons-material": "^5.14.16",
     "@mui/material": "^5.14.16",
+    "@types/formidable": "^3.4.4",
     "chart.js": "^4.4.0",
+    "formidable": "^3.5.1",
     "next": "^14",
     "react": "^18",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18",
-    "simplebar-react": "^3.2.4"
+    "simplebar-react": "^3.2.4",
+    "supabase": "^1.110.1",
+    "swiper": "^11.0.3"
   },
   "devDependencies": {
     "@faker-js/faker": "^8.2.0",
