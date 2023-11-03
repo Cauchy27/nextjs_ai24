@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef, useCallback} from "react";
+import Button from '@mui/material/Button';
 
 type SoundCardProps = {
   data:any,
@@ -89,7 +90,8 @@ const SoundCard = (SoundCardProps:SoundCardProps) =>{
     <>
       {
         (SoundCardProps.data.x1 && SoundCardProps.data.x1!=0) &&
-        <div className="wrapper" style={{
+        
+        <Button className="wrapper players" style={{
           position:"absolute",
           top:(SoundCardProps.data.y1) + "px",
           // top:"0px",
@@ -104,9 +106,9 @@ const SoundCard = (SoundCardProps:SoundCardProps) =>{
           opacity:0.5
         }}>
           <div id="1" ref={soundRef} style={{width:"100%",height:"100%"}}>
-            <p></p>
+            
           </div>
-        </div>
+        </Button>
       }
     </>
   );
