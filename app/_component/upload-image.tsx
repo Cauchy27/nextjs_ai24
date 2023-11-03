@@ -8,6 +8,37 @@ import Button from '@mui/material/Button';
 import ReviewCard from "./card";
 
 import { createClient } from "@supabase/supabase-js";
+import { type } from "os";
+
+type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[]
+type Database = {
+  public: {
+    Tables: {
+      movies: {
+        Row: {               // the data expected from .select()
+          id: number
+          name: string
+          data: Json | null
+        }
+        Insert: {            // the data to be passed to .insert()
+          id?: never         // generated columns must not be supplied
+          name: string       // `not null` columns with no default must be supplied
+          data?: Json | null // nullable columns can be omitted
+        }
+        Update: {            // the data to be passed to .update()
+          id?: never
+          name?: string      // `not null` columns are optional on .update()
+          data?: Json | null
+        }
+      }
+    }
+  }
+}
+
+const supabase = createClient<Database>(
+  "https://txzmfottvrwpxwfttemf.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4em1mb3R0dnJ3cHh3ZnR0ZW1mIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTkwMDUxODAsImV4cCI6MjAxNDU4MTE4MH0.GcQBkFXhhMRkyRtMg9XpYYomA3nUaSyriYyLliKwqW0"
+)
 
 const UploadImage = (): JSX.Element => {
   const [image, setImage] = useState<File | null>(null);
@@ -17,6 +48,7 @@ const UploadImage = (): JSX.Element => {
   const [Loading,setLoading]=useState<boolean>(false);
   const [PokeData, setPokeData] = useState<any>(null);
   const [PokeImage, setPokeImage] = useState<string>("");
+  const [imageId, setImageId] = useState<string>("test")
 
   const uploadToClient = async(event:React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -35,7 +67,29 @@ const UploadImage = (): JSX.Element => {
     let uploadUrl:any = createObjectURL;
     uploadUrl = createObjectURL.split("/");
     console.log(uploadUrl);
+    handleFileUpload();
+    
   }
+  const handleFileUpload = async() => {
+		const file = image;
+	
+		if (!file) return;
+
+        const storage = await supabase.storage.from("image_dual");
+        const { data, error } = await storage.upload(imageId, file);
+    
+        if (error) {
+          // TODO アップロードエラーの処理
+          console.log(error);
+        } else {
+          // TODO アップロード成功の処理
+    			console.log(data);
+    
+          // TODO 画像へのurlを使いたい場合
+          const url = await supabase.storage.from("image_dual").getPublicUrl(imageId);
+        }
+	};
+
 
   const generateFilePoint = (fileSize:any) => {
     setFilePoint(Math.round((fileSize/1000 - Math.floor(fileSize/1000))*1008));
@@ -71,6 +125,7 @@ const UploadImage = (): JSX.Element => {
     //     console.log(data);
     //     setImage(null);
     //   })
+
   }
 
   return (
