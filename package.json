@@ -25,7 +25,8 @@
     "react-dom": "^18",
     "simplebar-react": "^3.2.4",
     "supabase": "^1.110.1",
-    "swiper": "^11.0.3"
+    "swiper": "^11.0.3",
+    "use-sound": "^4.0.1"
   },
   "devDependencies": {
     "@faker-js/faker": "^8.2.0",

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect} from "react";
+import { useState, useEffect, useRef} from "react";
 import { GetStaticProps, NextPage } from "next";
 
 import Button from '@mui/material/Button';
@@ -9,6 +9,8 @@ import ReviewCard from "./card";
 
 import { createClient } from "@supabase/supabase-js";
 import { type } from "os";
+
+import ImageCard from "./image-card";
 
 type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[]
 type Database = {
@@ -48,7 +50,32 @@ const UploadImage = (): JSX.Element => {
   const [Loading,setLoading]=useState<boolean>(false);
   const [PokeData, setPokeData] = useState<any>(null);
   const [PokeImage, setPokeImage] = useState<string>("");
-  // const [imageId, setImageId] = useState<string>("test")
+  const [FileId, setFileId] = useState<string>("");
+  const [data, setData] = useState<any|null>([]);
+
+  const testData:any = [
+    {
+      x1:100,
+      x2:200,
+      y1:30,
+      y2:300,
+      sound:"bass1"
+    },
+    {
+      x1:200,
+      x2:300,
+      y1:200,
+      y2:300,
+      sound:"drum1"
+    },
+    {
+      x1:300,
+      x2:600,
+      y1:300,
+      y2:400,
+      sound:"guitar1"
+    }
+  ]
 
   const uploadToClient = async(event:React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -61,6 +88,11 @@ const UploadImage = (): JSX.Element => {
       console.log(filePoint);
       console.log(createObjectURL);
     }
+
+    // setTimeout(() => {
+    //   console.log("Delayed for 1 second.");
+    //   handleFileUpload();
+    // }, 1000);
   }
 
   const getImageUrl = () => {
@@ -88,7 +120,14 @@ const UploadImage = (): JSX.Element => {
     			console.log(data);
     
           // TODO 画像へのurlを使いたい場合
-          const url = await supabase.storage.from("image_dual").getPublicUrl(imageId);
+          const url:any = await supabase.storage.from("image_dual").getPublicUrl(imageId);
+          
+          setTimeout(() => {
+            console.log("Delayed for 1 second.");
+            setFileId(imageId);
+            console.log(url.data.publicUrl);
+          }, 1000);
+          console.log(url)
         }
 	};
 
@@ -99,12 +138,13 @@ const UploadImage = (): JSX.Element => {
 
   const getPoke = (id:Number) => {
     setLoading(true);
+    console.log(FileId);
     const data:any={
-      url:createObjectURL,
-      param:"test"
+      id:FileId,
+      param:"send"
     }
     console.log("start");
-    fetch('https://192.168.40.2:5555/',{
+    fetch('http://192.168.40.2:5555/',{
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -113,7 +153,7 @@ const UploadImage = (): JSX.Element => {
     })
     .then(res => res.json())
     .then((res_data)=>{
-      // setTasks(res_data);
+      setData(res_data);
       console.log(res_data)
       // return res_data;
     });
@@ -128,7 +168,57 @@ const UploadImage = (): JSX.Element => {
     //     setImage(null);
     //   })
 
+    
   }
+
+  // let targetImage:any = document.getElementById( "test" ) ;
+  // let clientRect:any = targetImage.getBoundingClientRect() ;
+  // var x = clientRect.left ;
+	// var y = clientRect.top ;
+
+  // window.AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+  // const ctx = new AudioContext();
+
+  // let sampleSource:any;
+  // // 再生中のときはtrue
+  // let isPlaying = false;
+
+  // // 音源を取得しAudioBuffer形式に変換して返す関数
+  // async function setupSample() {
+  //   const response = await fetch("/sound/guitar1.wav");
+
+  //   console.log(response);
+
+  //   const arrayBuffer = await response.arrayBuffer();
+  //   // Web Audio APIで使える形式に変換
+  //   const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
+  //   return audioBuffer;
+  // }
+
+  // // AudioBufferをctxに接続し再生する関数
+  // function playSample(ctx:any, audioBuffer:any) {
+  //   sampleSource = ctx.createBufferSource();
+  //   // 変換されたバッファーを音源として設定
+  //   sampleSource.buffer = audioBuffer;
+  //   // 出力につなげる
+  //   sampleSource.connect(ctx.destination);
+  //   sampleSource.start();
+  //   isPlaying = true;
+  // }
+
+  // const soundPlay = async() =>{
+  //   // if (isPlaying) return;
+  //   const sample = await setupSample();
+  //   playSample(ctx, sample);
+  // }
+  
+  // // oscillatorを破棄し再生を停止する
+  // const soundStop = async() => {
+  //   sampleSource?.stop();
+  //   isPlaying = false;
+  // }
+
+
 
   return (
     <>
@@ -141,10 +231,20 @@ const UploadImage = (): JSX.Element => {
         >
           画像のパス確認
         </Button>
-      <div className="mb-4"></div>
+      <div className="mb-4" id="test"></div>
       {
         image && 
-        <img className="flex justify-center items-center" src={createObjectURL} alt="test" />
+        <div>
+          <img id="target_image" className="flex justify-center items-center" src={createObjectURL} alt="test" />
+          <ImageCard 
+            data={
+              // data
+              testData
+            } 
+            start_x={1} 
+            start_y={2}
+          />
+        </div>
       }
       {
         filePoint != 0 && 
@@ -179,6 +279,8 @@ const UploadImage = (): JSX.Element => {
         </svg>
       </label>
       <input id="file-input" className="hidden" type="file" accept="image/*" name="myImage" onChange={uploadToClient} />
+      {/* <Button onClick={()=>{soundPlay()}}>play</Button>
+      <Button onClick={()=>{soundStop()}}>stop</Button> */}
     </>
   );
 }
