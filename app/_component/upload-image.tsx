@@ -8,6 +8,9 @@ import Button from '@mui/material/Button';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import SendIcon from '@mui/icons-material/Send';
 import { styled } from '@mui/material/styles';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch';
 
 import ReviewCard from "./card";
 
@@ -69,8 +72,7 @@ const UploadImage = (): JSX.Element => {
   const [data, setData] = useState<any|null>([]);
   const [OriginalImage_W,setOriginalImage_W] = useState<Number>(100);
   const [OriginalImage_H,setOriginalImage_H] = useState<Number>(100);
-
-  const test:boolean = true;
+  const [testMode, setTestMode] =useState<boolean>(true);
 
   const testData:any = '[{"x1": 570.6658935546875, "y1": 43.275543212890625, "x2": 658.0770263671875, "y2": 309.444091796875, "wave": "flute2"}, {"x1": 5.249404430389404, "y1": 1.4457319974899292, "x2": 1200.0, "y2": 893.9005737304688, "wave": "guitar6"}, {"x1": 104.89974212646484, "y1": 330.41998291015625, "x2": 572.8209228515625, "y2": 774.8350219726562, "wave": "piano2"}]';
 
@@ -78,7 +80,45 @@ const UploadImage = (): JSX.Element => {
   // const { getElementProperty } =
   //   useGetElementProperty<HTMLDivElement>(targetRef);
 
+  const changeTestMode = () => {
+    if(testMode){
+      setTestMode(false);
+    }
+    else{
+      setTestMode(true);
+    }
+  }
+
+  const testFileShow = () => {
+    if(!testMode){
+      return;
+    }
+    setCreateObjectURL("/image/test.jpeg");
+      setTimeout(()=>{
+          const img:any = new Image();
+  
+          img.onload = () => {
+            const size = {
+              originalwidth: img.naturalWidth,
+              width: img.width,
+              originalheight: img.naturalHeight,
+              height: img.height,
+            };
+            // URL.revokeObjectURL(img.src);
+            console.log(size);
+            setOriginalImage_W(img.naturalWidth);
+            setOriginalImage_H(img.naturalHeight);
+          }
+          img.src = "/image/test.jpeg";
+      },1000)
+      console.log("test");
+      return;
+  }
+
   const uploadToClient = async(event:React.ChangeEvent<HTMLInputElement>) => {
+    if(testMode){
+      return;
+    }
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
       setImage(file);
@@ -190,7 +230,7 @@ const UploadImage = (): JSX.Element => {
     <>
       <div className="mb-4" id="test"></div>
       {
-        image && 
+        createObjectURL && 
         <div id="target">
           <img 
             id="target_image" 
@@ -213,16 +253,21 @@ const UploadImage = (): JSX.Element => {
           />
         </div>
       }
-      <Button component="label" variant="contained" startIcon={<CloudUploadIcon />} sx={{ml:"30%",mr:"30%",mt:"3%",width:"40%",height:"15%"}}>
+        <FormGroup>
+          <FormControlLabel control={<Switch defaultChecked onChange={()=>{changeTestMode()}} />} label="テストモード" />
+        </FormGroup>
+        <Button component="label" variant="contained" startIcon={<CloudUploadIcon />} sx={{ml:"30%",mr:"30%",mt:"3%",width:"40%",height:"15%"}} onClick={()=>{testFileShow()}}>
           Upload Image
-          <VisuallyHiddenInput type="file" id="file-input" accept="image/*" name="myImage" onChange={uploadToClient} />
+          {
+            !testMode && 
+            <VisuallyHiddenInput type="file" id="file-input" accept="image/*" name="myImage" onChange={uploadToClient} />
+          }
         </Button>
       {/* <input id="file-input" className="hidden" type="file" accept="image/*" name="myImage" onChange={uploadToClient} /> */}
       {
-        image && 
-        <Button component="label" variant="contained" startIcon={<SendIcon />} color="success" sx={{ml:"30%",mr:"30%",mt:"3%",width:"40%",height:"20%"}} onClick={()=>{getPlayers(test);}}>Go to Generate</Button>
+        createObjectURL && 
+        <Button component="label" variant="contained" startIcon={<SendIcon />} color="success" sx={{ml:"30%",mr:"30%",mt:"3%",width:"40%",height:"20%"}} onClick={()=>{getPlayers(testMode);}}>Go to Generate</Button>
       }
-      
     </>
   );
 }
