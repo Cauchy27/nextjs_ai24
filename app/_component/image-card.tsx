@@ -149,6 +149,7 @@ const ImageCard = (ImageCardProps:ImageCardProps) =>{
       }} 
     >
       {
+        ImageCardProps.data.length > 0 &&
         ImageCardProps.data.map((card_data:any,key:number)=>(
           <SoundCard
             data={card_data}

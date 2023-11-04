@@ -10,7 +10,9 @@ type SoundCardProps = {
   colorcode:string,
 }
 
+
 const SoundCard = (SoundCardProps:SoundCardProps) =>{
+  const [soundName, setSoundName] = useState<string|null>("");
   const soundRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     //対象の要素を取得
@@ -26,7 +28,7 @@ const SoundCard = (SoundCardProps:SoundCardProps) =>{
       } else {
         //ここに内側をクリックしたときの処理
         console.log("first");
-        soundPlay(SoundCardProps.data.sound);
+        soundPlay(SoundCardProps.data.wave);
       }
     };
 
@@ -75,13 +77,20 @@ const SoundCard = (SoundCardProps:SoundCardProps) =>{
     const sample = await setupSample1(sound_name);
     playSample(ctx, sample);
   }
-   // キーを割り当て
-   const keyFunction = useCallback((event:any) => {
+
+  useEffect(() => {
+    
+  }, []);
+
+
+  // キーを割り当て
+  const keyFunction = useCallback((event:any) => {
     if (event.keyCode === SoundCardProps.keycode) {
       // キーコードを判定して何かする。
-      soundPlay(SoundCardProps.data.sound);
+      soundPlay(SoundCardProps.data.wave);
     }
   }, []);
+
   useEffect(() => {
     document.addEventListener("keydown", keyFunction, false);
   }, []);

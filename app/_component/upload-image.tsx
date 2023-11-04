@@ -70,9 +70,9 @@ const UploadImage = (): JSX.Element => {
   const [OriginalImage_W,setOriginalImage_W] = useState<Number>(100);
   const [OriginalImage_H,setOriginalImage_H] = useState<Number>(100);
 
-  const testData:any = [
-    {"x1": 570.6658935546875, "y1": 43.275543212890625, "x2": 658.0770263671875, "y2": 309.444091796875, "wave": "flute2"}, {"x1": 5.249404430389404, "y1": 1.4457319974899292, "x2": 1200.0, "y2": 893.9005737304688, "wave": "guitar6"}, {"x1": 104.89974212646484, "y1": 330.41998291015625, "x2": 572.8209228515625, "y2": 774.8350219726562, "wave": "piano2"},
-  ];
+  const test:boolean = true;
+
+  const testData:any = '[{"x1": 570.6658935546875, "y1": 43.275543212890625, "x2": 658.0770263671875, "y2": 309.444091796875, "wave": "flute2"}, {"x1": 5.249404430389404, "y1": 1.4457319974899292, "x2": 1200.0, "y2": 893.9005737304688, "wave": "guitar6"}, {"x1": 104.89974212646484, "y1": 330.41998291015625, "x2": 572.8209228515625, "y2": 774.8350219726562, "wave": "piano2"}]';
 
   // const targetRef = useRef(null);
   // const { getElementProperty } =
@@ -146,7 +146,7 @@ const UploadImage = (): JSX.Element => {
         return "fail";
 	};
 
-  const getPlayers = async() => {
+  const getPlayers = async(testFlag:boolean) => {
     const Id:any = await getImageUrl()
     setLoading(true);
     const data:any={
@@ -155,6 +155,12 @@ const UploadImage = (): JSX.Element => {
     }
     console.log(data);
     console.log("start");
+
+    if(testFlag){
+      console.log(JSON.parse(testData));
+      setData(JSON.parse(testData));
+      return "test";
+    }
 
     // 仕方がないので、IPベタ書き
     await fetch('http://192.168.40.2:5555/',{
@@ -199,8 +205,8 @@ const UploadImage = (): JSX.Element => {
           />
           <ImageCard 
             data={
-              // data
-              testData
+              data
+              // testData
             } 
             start_x={1} 
             start_y={2}
@@ -214,7 +220,7 @@ const UploadImage = (): JSX.Element => {
       {/* <input id="file-input" className="hidden" type="file" accept="image/*" name="myImage" onChange={uploadToClient} /> */}
       {
         image && 
-        <Button component="label" variant="contained" startIcon={<SendIcon />} color="success" sx={{ml:"30%",mr:"30%",mt:"3%",width:"40%",height:"20%"}} onClick={()=>{getPlayers();}}>Go to Generate</Button>
+        <Button component="label" variant="contained" startIcon={<SendIcon />} color="success" sx={{ml:"30%",mr:"30%",mt:"3%",width:"40%",height:"20%"}} onClick={()=>{getPlayers(test);}}>Go to Generate</Button>
       }
       
     </>
