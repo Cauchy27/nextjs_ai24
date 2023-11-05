@@ -16,7 +16,7 @@ const Home = () => {
   return (
     <React.Fragment>
       <AppBar 
-        title="AIハッカソン_チームdual ~ Image Players ~ "
+        title="AIハッカソン_チームdual ~ Instrumental Sight ~ "
         bgcolor='#cfe8fc'
         height='100px'
         width='100vw'
