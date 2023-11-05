@@ -21,7 +21,7 @@ export default function Layout(props: {
   }
 ) {
   return (
-    <html lang="ja" style={{backgroundSize:"cover"}}>
+    <html lang="ja" style={{height:"100vh"}}>
       <body style={{backgroundSize:"cover"}}>
         {/* <CssBaseline /> */}
         <Box sx={{ 
