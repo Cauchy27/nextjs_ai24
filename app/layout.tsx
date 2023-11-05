@@ -10,8 +10,8 @@ import Box from '@mui/material/Box';
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'NEXT APP',
-  description: 'テスト用のアプリです',
+  title: 'Instrumental Sight',
+  description: '24時間AIハッカソン チームdual発表作品',
 }
 
 export default function Layout(props: {
