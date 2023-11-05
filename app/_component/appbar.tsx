@@ -120,7 +120,7 @@ const ResponsiveAppBar =(AppBarProps:AppBarProps) => {
               textDecoration: 'none',
             }}
           >
-            LOGO
+            Instrumental Sight
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page:any) => (
