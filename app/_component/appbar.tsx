@@ -106,7 +106,7 @@ const ResponsiveAppBar =(AppBarProps:AppBarProps) => {
           <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
           <Typography
             variant="h5"
-            noWrap
+            // noWrap
             component="a"
             href="#app-bar-with-responsive-menu"
             sx={{
@@ -120,7 +120,7 @@ const ResponsiveAppBar =(AppBarProps:AppBarProps) => {
               textDecoration: 'none',
             }}
           >
-            Instrumental Sight
+            {AppBarProps.title}
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page:any) => (
